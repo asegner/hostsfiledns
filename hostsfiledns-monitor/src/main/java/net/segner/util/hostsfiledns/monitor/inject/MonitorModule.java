@@ -1,5 +1,6 @@
 package net.segner.util.hostsfiledns.monitor.inject;
 
+import ch.qos.logback.classic.Level;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import net.segner.util.hostsfiledns.inject.LibraryModule;
@@ -19,6 +20,7 @@ public class MonitorModule extends AbstractModule {
 
     private CommandLine commandLine;
     private final String[] args;
+    private boolean isQuiet;
 
     public MonitorModule(String[] args) {
         this.args = args;
@@ -56,7 +58,7 @@ public class MonitorModule extends AbstractModule {
     private @NotNull boolean isQuiet() {
         try {
             parseCommandLine();
-            return commandLine.hasOption(MonitorOptions.OPTION_QUIET);
+            return isQuiet;
         } catch (Exception e) {
             // exceptions in command line parsing will be handled by the application mode block and will cause HELP application mode
         }
@@ -67,6 +69,12 @@ public class MonitorModule extends AbstractModule {
         if (commandLine == null) {
             CommandLineParser parser = new DefaultParser();
             commandLine = parser.parse(new MonitorOptions(), args);
+
+            isQuiet = commandLine.hasOption(MonitorOptions.OPTION_QUIET);
+            if (isQuiet) {
+                ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+                root.setLevel(Level.ERROR);
+            }
         }
     }
 

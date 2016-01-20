@@ -21,20 +21,14 @@ public class MonitorApplication {
     private HostsFileUpdateService hostsFileUpdateService;
     @Inject
     private MonitorApplicationMode applicationMode;
-    @Inject
-    private boolean isQuiet;
 
     public void start() {
         switch (applicationMode) {
             case UPDATE:
                 try {
-                    if (!isQuiet) {
-                        logger.info("HostsFileDNS :: Checking DNS updates");
-                    }
+                    logger.info("HostsFileDNS :: Checking DNS updates");
                     hostsFileUpdateService.update();
-                    if (!isQuiet) {
-                        logger.info("HostsFileDNS :: Update Complete");
-                    }
+                    logger.info("HostsFileDNS :: Update Complete");
                 } catch (IOException e) {
                     if (logger.isDebugEnabled()) {
                         logger.debug(ExceptionUtils.getStackTrace(e));
