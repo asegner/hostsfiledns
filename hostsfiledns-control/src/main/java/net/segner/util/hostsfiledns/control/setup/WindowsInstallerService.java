@@ -11,7 +11,9 @@ import java.io.IOException;
 public class WindowsInstallerService extends GenericInstallerService {
     public static final String BIN_PATH = System.getenv("ProgramFiles") + File.separator + "hostsfiledns";
     private static final String BIN_NAME = "hostsfiledns.bat";
-    private static final String BIN_MONITOR_CMD = "@ECHO OFF\njava -jar " + BIN_PATH + "hostsfiledns-monitor.jar \"$@\" ";
+    private static final String BIN_MONITOR_CMD = "@ECHO OFF\r\njava -jar \"" + BIN_PATH + File.separator + "hostsfiledns-monitor.jar\" \"%*\"\r\n ";
+    private static final String SCHTASKS_CMD = "schtasks /CREATE /F /TN hostsfileDNS /XML ";
+    public static final String SCHTASKS_XML = "hostsfileDNS.xml";
 
     @InjectLogger
     private Logger logger;
@@ -19,7 +21,6 @@ public class WindowsInstallerService extends GenericInstallerService {
     @Override
     protected void doOsInstall() throws IOException {
         copyApplicationFiles();
-        createStartJob();
     }
 
     @Override
@@ -27,8 +28,8 @@ public class WindowsInstallerService extends GenericInstallerService {
         logger.info("=--=-- Creating monitor service --=--=");
 
         // use Schtasks to register service
-        File bin = new File(BIN_PATH + File.separator + BIN_NAME);
-        int loadResult = execute("schtasks  load " + bin.getAbsolutePath(), 0);
+        File xml = new File(BIN_PATH + File.separator + SCHTASKS_XML);
+        int loadResult = execute(SCHTASKS_CMD + "\"" + xml.getAbsolutePath() + "\"", 0);
         if (loadResult != 0) {
             String msg = "Unable to register monitor service";
             logger.error(msg);
@@ -41,9 +42,15 @@ public class WindowsInstallerService extends GenericInstallerService {
         logger.info("=--=-- Copying application files --=--=");
         createFolder(BIN_PATH);
 
+        // copy the startup task configuration
+        copyResource(getClass().getPackage().getName().replace(".", "/") + "/" + SCHTASKS_XML, BIN_PATH);
+
+        // create the bootstrap script
         String bscriptName = BIN_PATH + File.separator + BIN_NAME;
         logger.debug("  Creating bootstrap script: " + bscriptName);
-        writeBinFile(new File(bscriptName), BIN_MONITOR_CMD);
+        File bscriptFile = new File(bscriptName);
+        bscriptFile.setWritable(true);
+        writeBinFile(bscriptFile, BIN_MONITOR_CMD);
         copyJarsToPath(BIN_PATH);
     }
 

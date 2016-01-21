@@ -61,14 +61,7 @@ public abstract class GenericInstallerService implements InstallerService {
 
     protected void copyJarsToPath(@NotNull String libraryPath) throws IOException {
         for (String jar : jarApplicationResources) {
-            URL resource = ClassLoader.getSystemClassLoader().getResource(jar);
-            String destResource = libraryPath + File.separator + FilenameUtils.getName(resource.getFile());
-            logger.debug("  Copying '" + jar + "' to '" + destResource + "'");
-            File destFile = new File(destResource);
-            FileUtils.copyURLToFile(resource, destFile);
-            if (!destFile.exists()) {
-                throw new FileSystemException("Copy failed");
-            }
+            copyResource(jar, libraryPath);
         }
     }
 
@@ -81,4 +74,14 @@ public abstract class GenericInstallerService implements InstallerService {
         return executor.execute(cmdLine);
     }
 
+    protected void copyResource(@NotNull String resource, @NotNull String dest) throws IOException {
+        URL url = ClassLoader.getSystemClassLoader().getResource(resource);
+        String destResource = dest + File.separator + FilenameUtils.getName(url.getFile());
+        logger.debug("  Copying '" + resource + "' to '" + destResource + "'");
+        File destFile = new File(destResource);
+        FileUtils.copyURLToFile(url, destFile);
+        if (!destFile.exists()) {
+            throw new FileSystemException("Copy failed");
+        }
+    }
 }

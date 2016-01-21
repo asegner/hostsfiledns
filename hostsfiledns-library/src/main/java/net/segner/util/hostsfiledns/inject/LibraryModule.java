@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 public class LibraryModule extends AbstractModule {
-    public static final String LOCATION_HOST_WINDOWS = "\\system32\\driver\\etc\\hosts";
+    public static final String LOCATION_HOST_WINDOWS = "\\system32\\drivers\\etc\\hosts";
     public static final String LOCATION_HOST_NIX = "/etc/hosts";
     public static final String LOCATION_CONFIG_WINDOWS = "\\hostsfiledns.config";
     public static final String LOCATION_CONFIG_NIX = "/etc/hostsfiledns";

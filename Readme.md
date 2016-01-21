@@ -32,6 +32,8 @@ Bypass VPN DNS for select hosts via...
 ### Config File
 `hostsfiledns.config` under `<Program Files>\hostsfiledns`
 
+Editor (eg notepad) must be in _Administrator Mode_ (example in step 1 above)
+
 # General Usage
 
 * The configuration file takes one hostname per line to be managed by hostsfiledns
