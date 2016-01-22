@@ -44,10 +44,10 @@ public class ControlModule extends AbstractModule {
         try {
             CommandLine commandLine = parser.parse(new ControlOptions(), args);
 
-            if (commandLine.hasOption(ControlOptions.OPTION_INSTALL)) {
-                return ControlApplicationMode.INSTALL;
-            } else {
+            if (commandLine.hasOption(ControlOptions.OPTION_HELP)) {
                 return ControlApplicationMode.HELP;
+            } else {
+                return ControlApplicationMode.INSTALL;
             }
 
         } catch (ParseException pe) {

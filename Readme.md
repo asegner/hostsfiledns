@@ -17,7 +17,7 @@ Bypass VPN DNS for select hosts via...
 
 ### Setup
 
-`sudo java -jar hostsfiledns-control-<version>.jar --install`
+`sudo java -jar hostsfiledns-control-<version>.jar`
 
 * Installs to `/usr/local/lib`, `/usr/local/bin`
 * OSX: Creates a LaunchAgent under `/Library/LaunchAgents`
@@ -31,7 +31,7 @@ Bypass VPN DNS for select hosts via...
 ### Setup
 
 1. Right click on `Command Prompt` and select `Run as administrator`
-2. Run `java -jar hostsfiledns-control-<version>.jar --install`
+2. Run `java -jar hostsfiledns-control-<version>.jar`
 
  * Creates  a scheduled task and installs to the Program Files folder
 
