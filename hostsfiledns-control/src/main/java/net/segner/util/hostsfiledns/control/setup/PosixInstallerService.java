@@ -20,7 +20,9 @@ public class PosixInstallerService extends GenericInstallerService {
     protected static final String LIB_PATH = "/usr/local/lib/hostsfiledns";
     protected static final String BIN_PATH = "/usr/local/bin";
     protected static final String BIN_NAME = "hostsfiledns";
+    protected static final String BIN_FULLPATH = BIN_PATH + File.separator + BIN_NAME;
     protected static final String BIN_MONITOR_CMD = "#!/bin/sh\njava -jar /usr/local/lib/hostsfiledns/hostsfiledns-monitor.jar \"$@\" ";
+    protected static final String CRONTAB_CMD = "(crontab -l -u `logname` 2>/dev/null|grep -v \"" + BIN_FULLPATH + "\";echo \"0\t*/3\t*\t*\t*\t" + BIN_FULLPATH + " -u\") | crontab";
     protected static final Set<PosixFilePermission> PERMS_READ = new HashSet<>(Arrays.asList(
             PosixFilePermission.OWNER_READ,
             PosixFilePermission.GROUP_READ,
@@ -46,9 +48,8 @@ public class PosixInstallerService extends GenericInstallerService {
         createFolder(LIB_PATH);
         createFolder(BIN_PATH);
 
-        String bscriptName = BIN_PATH + File.separator + BIN_NAME;
-        logger.debug("  Creating bootstrap script: " + bscriptName);
-        writeBinFile(new File(bscriptName), BIN_MONITOR_CMD);
+        logger.debug("  Creating bootstrap script: " + BIN_FULLPATH);
+        writeBinFile(new File(BIN_FULLPATH), BIN_MONITOR_CMD);
         copyJarsToPath(LIB_PATH);
     }
 
@@ -61,7 +62,12 @@ public class PosixInstallerService extends GenericInstallerService {
     protected void createStartJob() throws IOException {
         logger.info("=--=-- Creating monitor service --=--=");
 
-        //TODO install init script in posix
+        int loadResult = execute(CRONTAB_CMD, 0);
+        if (loadResult != 0) {
+            String msg = "Unable to install monitor service";
+            logger.error(msg);
+            throw new RuntimeException(msg);
+        }
     }
 
     protected @NotNull UserPrincipal getUser(@NotNull String username) throws IOException {

@@ -32,7 +32,6 @@ public abstract class GenericInstallerService implements InstallerService {
         logger.info("HostsDNS Service Install");
         logger.info("Operating System: " + SystemUtils.OS_NAME);
 
-        //TODO: check for current install, and, if found, uninstall before continuing
         createDefaultConfiguration();
         doOsInstall();
         createStartJob();
