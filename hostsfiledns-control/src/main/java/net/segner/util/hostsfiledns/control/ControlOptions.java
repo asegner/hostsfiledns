@@ -8,7 +8,7 @@ public class ControlOptions extends Options {
     public static final String OPTION_HELP = "help";
 
     public ControlOptions() {
-        addOption("i", OPTION_INSTALL, false, "Installs the HostsDNS service on this machine");
+        addOption("i", OPTION_INSTALL, false, "Installs the HostsfileDNS service on this machine");
         addOption("?", OPTION_HELP, false, "Displays this help message");
     }
 }

@@ -6,8 +6,10 @@ import net.segner.util.hostsfiledns.inject.InjectLogger;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -64,13 +66,17 @@ public abstract class GenericInstallerService implements InstallerService {
         }
     }
 
-    protected int execute(@NotNull String command, int successExitValue) throws IOException {
+    protected String execute(@NotNull String command, int successExitValue) throws IOException {
         CommandLine cmdLine = CommandLine.parse(command);
         DefaultExecutor executor = new DefaultExecutor();
         executor.setExitValue(successExitValue);
+        executor.setWorkingDirectory(SystemUtils.getUserDir());
         ExecuteWatchdog watchdog = new ExecuteWatchdog(10000);
         executor.setWatchdog(watchdog);
-        return executor.execute(cmdLine);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        executor.setStreamHandler(new PumpStreamHandler(outputStream));
+        executor.execute(cmdLine);
+        return outputStream.toString();
     }
 
     protected void copyResource(@NotNull String resource, @NotNull String dest) throws IOException {

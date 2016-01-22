@@ -22,8 +22,9 @@ public class PosixInstallerService extends GenericInstallerService {
     protected static final String BIN_NAME = "hostsfiledns";
     protected static final String BIN_FULLPATH = BIN_PATH + File.separator + BIN_NAME;
     protected static final String BIN_MONITOR_CMD = "#!/bin/sh\njava -jar /usr/local/lib/hostsfiledns/hostsfiledns-monitor.jar \"$@\" ";
-    protected static final String CRONTAB_CMD = "(crontab -l -u `logname` 2>/dev/null|grep -v \"" + BIN_FULLPATH + "\";echo \"0\t*/3\t*\t*\t*\t" + BIN_FULLPATH + " -u\") | crontab";
+    protected static final String BIN_CRON_CMD = "#!/bin/sh\n" + BIN_FULLPATH + " -u \n";
     protected static final Set<PosixFilePermission> PERMS_READ = new HashSet<>(Arrays.asList(
+            PosixFilePermission.OWNER_READ,
             PosixFilePermission.OWNER_READ,
             PosixFilePermission.GROUP_READ,
             PosixFilePermission.OTHERS_READ));
@@ -61,13 +62,9 @@ public class PosixInstallerService extends GenericInstallerService {
     @Override
     protected void createStartJob() throws IOException {
         logger.info("=--=-- Creating monitor service --=--=");
-
-        int loadResult = execute(CRONTAB_CMD, 0);
-        if (loadResult != 0) {
-            String msg = "Unable to install monitor service";
-            logger.error(msg);
-            throw new RuntimeException(msg);
-        }
+        File cronFile = new File("/etc/cron.daily/hostsfiledns");
+        FileUtils.writeStringToFile(cronFile, BIN_CRON_CMD);
+        Files.setPosixFilePermissions(cronFile.toPath(), PERMS_READEXEC);
     }
 
     protected @NotNull UserPrincipal getUser(@NotNull String username) throws IOException {

@@ -29,13 +29,7 @@ public class WindowsInstallerService extends GenericInstallerService {
 
         // use Schtasks to register service
         File xml = new File(BIN_PATH + File.separator + SCHTASKS_XML);
-        int loadResult = execute(SCHTASKS_CMD + "\"" + xml.getAbsolutePath() + "\"", 0);
-        if (loadResult != 0) {
-            String msg = "Unable to register monitor service";
-            logger.error(msg);
-            throw new RuntimeException(msg);
-        }
-
+        execute(SCHTASKS_CMD + "\"" + xml.getAbsolutePath() + "\"", 0);
     }
 
     private void copyApplicationFiles() throws IOException {

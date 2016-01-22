@@ -30,11 +30,7 @@ public class OsxInstallerService extends PosixInstallerService {
         Files.setPosixFilePermissions(dest.toPath(), PERMS_READ);
 
         // use launchd to register plist
-        int loadResult = execute("launchctl load " + dest.getAbsolutePath(), 0);
-        if (loadResult != 0) {
-            String msg = "Unable to install monitor service";
-            logger.error(msg);
-            throw new RuntimeException(msg);
-        }
+        execute("launchctl load " + dest.getAbsolutePath(), 0);
+
     }
 }

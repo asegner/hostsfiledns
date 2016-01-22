@@ -44,7 +44,7 @@ Bypass VPN DNS for select hosts via...
 
 * The configuration file takes one hostname per line to be managed by hostsfiledns
 * Each managed hostname will have one DNS resolved IP stored in the system hosts file
-* By default, if the service is installed, the hosts file is checked every three hours
+* By default, if the service is installed, the hosts file is checked every three hours (Linux once a day)
 * To update hosts immediately, run either `sudo hostsfiledns -u` or `hostsfiledns.bat -u` in an admin command prompt
 * The installing user must have sudo access on Linux/OSX and admin rights on Windows
 * Supports Linux, OSX, or Windows
