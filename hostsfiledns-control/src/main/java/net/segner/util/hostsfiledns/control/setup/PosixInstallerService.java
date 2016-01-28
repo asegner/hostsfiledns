@@ -30,6 +30,7 @@ public class PosixInstallerService extends GenericInstallerService {
             PosixFilePermission.OTHERS_READ));
     protected static final Set<PosixFilePermission> PERMS_READEXEC = new HashSet<>(Arrays.asList(
             PosixFilePermission.OWNER_READ,
+            PosixFilePermission.OWNER_WRITE,
             PosixFilePermission.OWNER_EXECUTE,
             PosixFilePermission.GROUP_READ,
             PosixFilePermission.GROUP_EXECUTE,

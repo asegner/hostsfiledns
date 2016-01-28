@@ -11,7 +11,7 @@ import java.nio.file.Files;
 
 public class OsxInstallerService extends PosixInstallerService {
     public static final String HOSTSFILEDNS_PLIST = "net.segner.util.hostsfiledns.plist";
-    public static final String STARTUPBIN_PATH = "/Library/LaunchAgents";
+    public static final String STARTUPBIN_PATH = "/Library/LaunchDaemons";
 
     @InjectLogger
     private Logger logger;
